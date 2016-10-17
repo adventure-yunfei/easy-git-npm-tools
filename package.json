@@ -1,0 +1,34 @@
+{
+  "name": "easy-git-npm-tools",
+  "version": "0.0.1",
+  "description": "This is a tool that config git & npm tools, shorting git command, and configuring npm usage in China",
+  "main": "index.js",
+  "repository": {
+    "url": "https://github.com/adventure-yunfei/easy-git-npm-tools.git",
+    "type": "git"
+  },
+  "scripts": {
+    "build": "babel --presets es2015 src/ -d lib/",
+    "prepublish": "npm run build"
+  },
+  "files": [
+    "lib/",
+    "src/"
+  ],
+  "bin": {
+    "easy-git-npm-tools": "lib/cli.js"
+  },
+  "author": "yunfei",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "fs-extra": "^0.30.0",
+    "lodash": "^4.16.4",
+    "os-env-setter": "^0.0.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0",
+    "chokidar": "^1.6.0"
+  }
+}
