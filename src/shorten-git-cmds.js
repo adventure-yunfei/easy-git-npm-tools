@@ -3,7 +3,7 @@ import {execCmd, negativePromise, sequencePromises} from './utils';
 
 const GIT_SHORT_COMMANDS = {
     co: 'checkout',
-    ca: 'commit -a',
+    ca: 'commit --amend',
     cm: 'commit -m',
     a: 'add -A',
     st: 'status',
