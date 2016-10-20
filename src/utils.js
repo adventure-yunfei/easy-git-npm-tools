@@ -1,11 +1,11 @@
 import child_process from 'child_process';
 
 export function execCmd(cmd) {
-    // cmd += ' 2>&1';
+    cmd += ' 2>&1';
     return new Promise((resolve, reject) => {
         const cp = child_process.exec(cmd, function (err, stdout) {
             if (err) {
-                reject(stdout);
+                reject(`#CMD#: ${cmd}\n` + stdout);
             } else {
                 resolve(stdout);
             }

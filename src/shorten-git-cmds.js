@@ -17,16 +17,16 @@ export default function shortenGitCmds() {
         return negativePromise(execCmd(`git config alias.${shortCmd}`));
     }));
 
-    return Promise.resolve() //ensureAllShortCmdsUnset()
+    return execCmd('git --version') //ensureAllShortCmdsUnset()
         .then(() => {
+            console.log('# 配置 git: #');
             return sequencePromises(_.map(GIT_SHORT_COMMANDS, (longCmd, shortCmd) => () => {
-                return execCmd(`git config alias.${shortCmd} "${longCmd}"`)
+                return execCmd(`git config --global alias.${shortCmd} "${longCmd}"`)
                     .then(() => {
                         console.log(`  已设置Git短命令: ${shortCmd} = ${longCmd}`);
                     });
             }));
-        })
-        .catch(() => {
-            console.error(`Git短命令已被设置，请检查: [${shortCmdKeys.join(', ')}]`);
+        }, () => {
+            console.log('# 配置 git: # 未安装, 跳过.');
         });
 }

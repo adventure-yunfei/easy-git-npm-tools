@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import setOsEnv from 'os-env-setter/lib/index';
+import 'colors';
+import setOsEnv from 'os-env-setter';
 import {execCmd, sequencePromises} from './utils';
 
-const NPM_CONFIG = {
+export const NPM_CONFIG = {
     'registry': 'https://registry.npm.taobao.org',
     'disturl': 'https://npm.taobao.org/dist'
 };
@@ -12,17 +13,22 @@ const NPM_ENV = {
     'ELECTRON_MIRROR': 'https://npm.taobao.org/mirrors/electron/'
 };
 
-function setupNpmConfig(configName) {
-    const val = NPM_CONFIG[configName];
-    return execCmd(`npm config set ${configName} "${val}"`)
-        .then(() => console.log(`  已设置npm变量: ${configName}=${val}`));
+function setupNpmConfig(key, val) {
+    return execCmd(`npm config set ${key} "${val}"`)
+        .then(() => {
+            console.log(`  已设置npm变量: ${key}=${val}`)
+            if (key === 'registry') {
+                console.warn('  # WARN: # 请注意更改了 npm "registry" 之后,  "npm publish" 将会失败.'.yellow);
+                console.warn('           (手动设回: --registry https://registry.npmjs.org )'.yellow);
+            }
+        });
 }
 
 function setupNpmEnvs() {
     return sequencePromises(_.map(NPM_ENV, (val, key) => () => execCmd(`export "${key}"="${val}"`)))
         .then(() => {
-            return setOsEnv(NPM_ENV, {log: false})
-                .then(writtenEnvs => {
+            return setOsEnv(NPM_ENV)
+                .then(({writtenFile, writtenEnvs}) => {
                     if (writtenEnvs.length) {
                         writtenEnvs.forEach(({key, value}) => {
                             console.log(`  已设置环境变量: ${key}=${value}`);
@@ -32,19 +38,15 @@ function setupNpmEnvs() {
         });
 }
 
-function hasNpmInstalled() {
-    return execCmd('npm -v')
-        .catch(() => {
-            return Promise.reject('npm 未安装.');
-        });
-}
-
 export default function configNpmInChina() {
-    return hasNpmInstalled()
+    return execCmd('npm -v')
         .then(() => {
+            console.log('# 配置 npm: #');
             return sequencePromises(
-                _.map(NPM_CONFIG, (val, key) => () => setupNpmConfig(key))
+                _.map(NPM_CONFIG, (val, key) => () => setupNpmConfig(key, val))
                 .concat(setupNpmEnvs)
             );
+        }, () => {
+            return Promise.reject('# 配置 npm: # 未安装, 跳过.');
         });
 }

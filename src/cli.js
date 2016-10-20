@@ -2,8 +2,10 @@
 
 import fse from 'fs-extra';
 import commander from 'commander';
+import 'colors';
 import shortenGitCmds from './shorten-git-cmds';
 import configNpmInChina from './config-npm-in-China';
+import configYarnInChina from './config-yarn-in-China';
 import {execCmd, sequencePromises} from './utils';
 
 const COMMANDS = [
@@ -16,6 +18,11 @@ const COMMANDS = [
         name: 'config-npm',
         description: 'Config npm usage in China',
         action: configNpmInChina
+    },
+    {
+        name: 'config-yarn',
+        description: 'Config yarn usage in China',
+        action: configYarnInChina
     }
 ].map(cmd => {
     const action = cmd.action;
@@ -28,18 +35,22 @@ const COMMANDS = [
     return cmd;
 });
 
+function onError(err) {
+    console.error('# ERROR: #'.red);
+    console.log((err.stack || err).toString().red);
+}
+
 function executeAllCmds() {
     return sequencePromises(COMMANDS.map(cmd => () => {
-        console.log(`\n# CMD: ${cmd.name} #`);
         return cmd.action();
-    }));
+    })).catch(onError);
 }
 
 COMMANDS.forEach(cmd => {
     commander
         .command(cmd.name)
         .description(cmd.description)
-        .action(cmd.action);
+        .action(() => cmd.action().catch(onError));
 });
 
 commander
