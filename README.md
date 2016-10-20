@@ -8,7 +8,7 @@
 - `npm install easy-git-npm-tools -g`
 - `easy-git-npm-tools`
 
-设置的配置项j结果如下：
+设置的配置项结果如下：
 
 ```
 bash$ easy-git-npm-tools
