@@ -5,6 +5,7 @@ import commander from 'commander';
 import 'colors';
 import shortenGitCmds from './shorten-git-cmds';
 import configNpmInChina from './config-npm-in-China';
+import configNodeInChina from './config-node-in-China';
 import configYarnInChina from './config-yarn-in-China';
 import {execCmd, sequencePromises} from './utils';
 
@@ -13,6 +14,11 @@ const COMMANDS = [
         name: 'shorten-git-cmd',
         description: 'Shorten git command (e.g. "git commit -m" => "git cm"; "git commit --amend" => "git ca")',
         action: shortenGitCmds
+    },
+    {
+        name: 'config-node',
+        description: 'Config node usage in China',
+        action: configNodeInChina
     },
     {
         name: 'config-npm',
@@ -38,6 +44,7 @@ const COMMANDS = [
 function onError(err) {
     console.error('# ERROR: #'.red);
     console.log((err.stack || err).toString().red);
+    process.exit(1);
 }
 
 function executeAllCmds() {

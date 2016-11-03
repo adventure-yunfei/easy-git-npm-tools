@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "babel --presets es2015 src/ -d lib/",
+    "setup": "npm run build && node lib/cli.js",
     "prepublish": "npm run build"
   },
   "files": [
