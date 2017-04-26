@@ -1,6 +1,6 @@
 {
   "name": "easy-git-npm-tools",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "This is a tool that config git & npm tools, shorting git command, and configuring npm usage in China",
   "main": "index.js",
   "repository": {
