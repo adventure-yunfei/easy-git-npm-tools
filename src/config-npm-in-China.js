@@ -25,16 +25,13 @@ function setupNpmConfig(key, val) {
 }
 
 function setupNpmEnvs() {
-    return sequencePromises(_.map(NPM_ENV, (val, key) => () => execCmd(`export "${key}"="${val}"`)))
-        .then(() => {
-            return setOsEnv(NPM_ENV)
-                .then(({writtenFile, writtenEnvs}) => {
-                    if (writtenEnvs.length) {
-                        writtenEnvs.forEach(({key, value}) => {
-                            console.log(`  已设置环境变量: ${key}=${value}`);
-                        });
-                    }
+    return setOsEnv(NPM_ENV)
+        .then(({writtenFile, writtenEnvs}) => {
+            if (writtenEnvs.length) {
+                writtenEnvs.forEach(({key, value}) => {
+                    console.log(`  已设置环境变量: ${key}=${value}`);
                 });
+            }
         });
 }
 
